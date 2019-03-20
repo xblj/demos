@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+  </head>
+  <body>
+    <button id="btn">点我</button>
+    <button id="closeBtn">关闭连接</button>
+    <ul id="msgs"></ul>
+    <script>
+      const ul = document.getElementById('msgs');
+
+      const ws = new WebSocket('ws://localhost:8080');
+      ws.onopen = function() {
+        console.log('open');
+        addMsg('ws连接已打开');
+      };
+      ws.onmessage = function(message) {
+        console.log(message);
+        addMsg(`接受到消息：${message.data}`);
+      };
+
+      const btn = document.getElementById('btn');
+      btn.onclick = function() {
+        ws.send(getString(10));
+      };
+
+      const closeBtn = document.getElementById('closeBtn');
+      closeBtn.onclick = function() {
+        ws.close(1000, '手动关闭');
+      };
+
+      function getString(len) {
+        let str = '';
+        for (let i = 0; i < len; i++) {
+          str += '1';
+        }
+        return str;
+      }
+
+      function addMsg(msg) {
+        const li = document.createElement('li');
+        li.innerText = msg;
+        ul.appendChild(li);
+      }
+    </script>
+  </body>
+</html>
